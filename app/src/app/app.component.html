@@ -1,0 +1,131 @@
+<mat-toolbar color="primary" class="mat-elevation-z8">
+  <mat-toolbar-row>
+    <span>Lead Market CSV file upload</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+<mat-drawer-container class="container">
+  <mat-drawer-content>
+    <form [formGroup]="formGroup" novalidate style="margin: 40px auto; width: 800px">
+      <h3>Select files</h3>
+      <p>
+        Server status: <i>{{ status }}</i>
+      </p>
+      <div>
+        <input hidden type="file" FileSelect [uploader]="uploader" multiple #filesInput />
+        <button type="button" mat-raised-button (click)="filesInput.click()">Choose Files</button>
+        <input hidden type="file" FileSelect [uploader]="uploader" #fileInput />
+        <button type="button" mat-raised-button (click)="fileInput.click()">Choose File</button>
+      </div>
+
+      <div>
+        <h3>Upload queue</h3>
+        <p>Queue length: {{ uploader?.queue?.length }}</p>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th width="35%">Name</th>
+              <th width="11%">Size</th>
+              <th width="20%">Progress</th>
+              <th width="12%">Status</th>
+              <th width="22%">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of uploader.queue">
+              <td>
+                <strong>{{ item?.file?.name }}</strong>
+              </td>
+              <td *ngIf="uploader.options.isHTML5" nowrap>
+                {{ item?.file?.size / 1024 / 1024 | number: '.4' }} KB
+              </td>
+              <td *ngIf="uploader.options.isHTML5">
+                <div class="progress" style="margin-bottom: 0;">
+                  <div
+                    class="progress-bar"
+                    role="progressbar"
+                    [ngStyle]="{ width: item.progress + '%' }"
+                  ></div>
+                </div>
+              </td>
+              <td>
+                <span *ngIf="item.isSuccess">
+                  <i>OK</i>
+                </span>
+                <span *ngIf="item.isCancel">
+                  <i>Canceled</i>
+                </span>
+                <span *ngIf="item.isError">
+                  <i>Error</i>
+                </span>
+              </td>
+              <td nowrap>
+                <button
+                  type="button"
+                  mat-icon-button
+                  color="primary"
+                  (click)="item.upload()"
+                  [disabled]="item.isReady || item.isUploading || item.isSuccess"
+                >
+                  <mat-icon>cloud_upload</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  color="accent"
+                  (click)="item.cancel()"
+                  [disabled]="!item.isUploading"
+                >
+                  <mat-icon>cancel</mat-icon>
+                </button>
+
+                <button mat-icon-button color="warn" type="button" (click)="item.remove()">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div>
+          <div>
+            <p>Queue progress:</p>
+            <div class="progress">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                [ngStyle]="{ width: uploader.progress + '%' }"
+              ></div>
+            </div>
+          </div>
+          <p>
+            <button
+              type="button"
+              mat-button
+              (click)="uploader.uploadAll()"
+              [disabled]="!uploader.getNotUploadedItems().length"
+            >
+              <mat-icon>cloud_upload</mat-icon> Upload all
+            </button>
+            <button
+              type="button"
+              mat-button
+              (click)="uploader.cancelAll()"
+              [disabled]="!uploader.isUploading"
+            >
+              <mat-icon>cancel</mat-icon> Cancel all
+            </button>
+            <button
+              type="button"
+              mat-button
+              (click)="uploader.clearQueue()"
+              [disabled]="!uploader.queue.length"
+            >
+              <mat-icon>delete</mat-icon> Remove all
+            </button>
+          </p>
+        </div>
+      </div>
+    </form>
+  </mat-drawer-content>
+</mat-drawer-container>

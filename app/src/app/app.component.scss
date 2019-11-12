@@ -1,0 +1,37 @@
+.container {
+  width: 100%;
+  min-height: calc(100% - 64px);
+  padding: 10px 20px;
+}
+
+.table {
+  width: 800px;
+}
+
+.progress {
+  display: flex;
+  height: 1rem;
+  overflow: hidden;
+  font-size: 0.75rem;
+  background-color: #e9ecef;
+  border-radius: 0.25rem;
+}
+
+.progress-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #007bff;
+  transition: width 0.6s ease;
+}
+
+.mat-raised-button:not(:last-child) {
+  margin-right: 10px;
+}
+
+td {
+  text-align: center;
+}
